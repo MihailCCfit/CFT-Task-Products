@@ -2,6 +2,7 @@ package tsukanov.mikhail.products.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProductType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,12 +27,12 @@ public class ProductType {
     @OneToMany(fetch = EAGER, cascade = ALL)
     private Set<Product> products;
 
-    @ManyToMany(fetch = EAGER, cascade = ALL)
-    private Set<AttributeType> requiredAttributeTypes;
+    @OneToMany(fetch = EAGER, cascade = ALL)
+    private Set<RequiredAttribute> requiredAttributes;
 
-    public ProductType(String name, Set<AttributeType> requiredAttributeTypes) {
+    public ProductType(String name, Set<RequiredAttribute> requiredAttributes) {
         this.name = name;
-        this.requiredAttributeTypes = requiredAttributeTypes;
+        this.requiredAttributes = requiredAttributes;
     }
 
     public ProductType(String name) {
@@ -42,7 +44,7 @@ public class ProductType {
         return "ProductType{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", attributeTypes=" + requiredAttributeTypes +
+                ", requiredAttributes=" + requiredAttributes +
                 '}';
     }
 

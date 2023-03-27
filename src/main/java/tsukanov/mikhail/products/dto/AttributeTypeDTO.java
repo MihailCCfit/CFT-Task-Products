@@ -2,15 +2,14 @@ package tsukanov.mikhail.products.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import tsukanov.mikhail.products.entity.AttributeType;
+import tsukanov.mikhail.products.entity.RequiredAttribute;
 
 @Data
 @AllArgsConstructor
 public class AttributeTypeDTO {
     private String attributeTypeName;
-    private String Type;
 
-    public AttributeType toAttributeType() {
-        return new AttributeType(attributeTypeName, Type);
+    public RequiredAttribute toAttributeType() {
+        return new RequiredAttribute(attributeTypeName);
     }
 }
