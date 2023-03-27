@@ -1,11 +1,16 @@
 package tsukanov.mikhail.products.entity;
 
 import jakarta.persistence.*;
+import lombok.Generated;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 @Entity
 @NoArgsConstructor
+@Setter
+@Getter
 public class Attribute {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

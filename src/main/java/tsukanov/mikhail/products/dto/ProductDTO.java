@@ -15,11 +15,11 @@ public class ProductDTO {
     private Long amount;
     @NotNull
     private String manufacturer;
-    private ProductType productType;
+    private String productType;
     private Set<AttributeDTO> attributes;
 
     public Product toProduct() {
-        return new Product(serialNumber, amount, manufacturer, productType,
+        return new Product(serialNumber, amount, manufacturer, new ProductType(productType),
                 attributes.stream().map(AttributeDTO::toAttribute)
                         .collect(Collectors.toSet()));
     }

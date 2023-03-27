@@ -2,6 +2,7 @@ package tsukanov.mikhail.products.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
@@ -13,6 +14,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
 public class AttributeType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,8 +28,8 @@ public class AttributeType {
     @OneToMany(fetch = EAGER, cascade = ALL)
     private Set<Attribute> attributes;
 
-    @ManyToOne(fetch = EAGER, cascade = ALL)
-    private ProductType productType;
+    @ManyToMany(fetch = EAGER, cascade = ALL)
+    private Set<ProductType> productTypes;
 
     public AttributeType(String attributeTypeName, String type) {
         this.attributeTypeName = attributeTypeName;
