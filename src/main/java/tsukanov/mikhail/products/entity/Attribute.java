@@ -39,9 +39,8 @@ public class Attribute {
         this.aValue = aValue;
     }
 
-    public Attribute(String attributeType, @NotNull String value) {
-        this.attributeType = attributeType;
-        this.aValue = value;
+    public Attribute(String attributeName) {
+        this.attributeType = attributeName;
     }
 
     @Override

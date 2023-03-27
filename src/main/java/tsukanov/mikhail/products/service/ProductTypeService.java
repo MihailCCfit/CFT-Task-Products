@@ -11,7 +11,7 @@ import tsukanov.mikhail.products.dto.ProductTypeDTO;
 import tsukanov.mikhail.products.entity.Product;
 import tsukanov.mikhail.products.entity.ProductType;
 import tsukanov.mikhail.products.entity.RequiredAttribute;
-import tsukanov.mikhail.products.utils.ReturnBack;
+import tsukanov.mikhail.products.utils.Maybe;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,45 +24,45 @@ public class ProductTypeService {
     private ProductTypeRepository productTypeRepository;
     private AttributeTypeRepository attributeTypeRepository;
 
-    public ReturnBack<ProductType> addProductType(ProductTypeDTO productTypeDTO) {
+    public Maybe<ProductType> addProductType(ProductTypeDTO productTypeDTO) {
         if (productTypeDTO == null) {
-            return new ReturnBack<>("There is no productType", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productType", HttpStatus.BAD_REQUEST);
         }
-        Optional<ProductType> productType = getProductType(productTypeDTO);
-        if (productType.isPresent()) {
-            return new ReturnBack<>(productType.get());
-        }
-        return new ReturnBack<>(productTypeRepository.save(productTypeDTO.toProductType()));
+        return getProductType(productTypeDTO)
+                .map(Maybe::new)
+                .orElseGet(() -> new Maybe<>(
+                        productTypeRepository.save(productTypeDTO.toProductType())
+                ));
     }
 
     @Transactional
-    public ReturnBack<ProductType> addRequiredAttributeType(String productTypeName, AttributeTypeDTO attributeTypeDTO) {
+    public Maybe<ProductType> addRequiredAttributeType(String productTypeName, AttributeTypeDTO attributeTypeDTO) {
         if (productTypeName == null) {
-            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
         }
         if (attributeTypeDTO == null) {
-            return new ReturnBack<>("There is no attributeType", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no attributeType", HttpStatus.BAD_REQUEST);
         }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
-            return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
+            return new Maybe<>("There is no productType", HttpStatus.NOT_FOUND);
         }
         productType.get().getRequiredAttributes().add(attributeTypeDTO.toAttributeType());
-        return new ReturnBack<>(productType.get());
+        return new Maybe<>(productType.get());
     }
 
     @Transactional
-    public ReturnBack<ProductType> addRequiredAttributeType(String productTypeName,
-                                                            Collection<AttributeTypeDTO> attributeTypeDTOCollection) {
+    public Maybe<ProductType> addRequiredAttributeType(String productTypeName,
+                                                       Collection<AttributeTypeDTO> attributeTypeDTOCollection) {
         if (productTypeName == null) {
-            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
         }
         if (attributeTypeDTOCollection == null) {
-            return new ReturnBack<>("There is no attributeType", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no attributeType", HttpStatus.BAD_REQUEST);
         }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
-            return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
+            return new Maybe<>("There is no productType", HttpStatus.NOT_FOUND);
         }
         productType.get().getRequiredAttributes()
                 .addAll(attributeTypeDTOCollection
@@ -70,72 +70,72 @@ public class ProductTypeService {
                         .map(AttributeTypeDTO::toAttributeType)
                         .toList()
                 );
-        return new ReturnBack<>(productType.get());
+        return new Maybe<>(productType.get());
     }
 
 
     @Transactional
-    public ReturnBack<ProductType> removeRequiredAttributeType(String productTypeName,
-                                                               String attributeTypeName) {
+    public Maybe<ProductType> removeRequiredAttributeType(String productTypeName,
+                                                          String attributeTypeName) {
         if (productTypeName == null) {
-            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
         }
         if (attributeTypeName == null) {
-            return new ReturnBack<>("There is no attributeTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no attributeTypeName", HttpStatus.BAD_REQUEST);
         }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
-            return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
+            return new Maybe<>("There is no productType", HttpStatus.NOT_FOUND);
         }
         Optional<RequiredAttribute> attributeTypeOptional = attributeTypeRepository
                 .findByAttributeName(attributeTypeName);
         if (attributeTypeOptional.isEmpty()) {
-            return new ReturnBack<>("There is no such attributeTypeName", HttpStatus.NOT_FOUND);
+            return new Maybe<>("There is no such attributeTypeName", HttpStatus.NOT_FOUND);
         }
         RequiredAttribute requiredAttribute = attributeTypeOptional.get();
         productType.get().getRequiredAttributes().remove(requiredAttribute);
-        return new ReturnBack<>(productType.get());
+        return new Maybe<>(productType.get());
     }
 
     @Transactional
-    private ReturnBack<ProductType> removeRequiredAttributeType(ProductType productType,
-                                                                String attributeTypeName) {
+    private Maybe<ProductType> removeRequiredAttributeType(ProductType productType,
+                                                           String attributeTypeName) {
         if (productType == null) {
-            return new ReturnBack<>("There is no productType", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productType", HttpStatus.BAD_REQUEST);
         }
         if (attributeTypeName == null) {
-            return new ReturnBack<>("There is no attributeTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no attributeTypeName", HttpStatus.BAD_REQUEST);
         }
         Optional<RequiredAttribute> attributeTypeOptional = attributeTypeRepository
                 .findByAttributeName(attributeTypeName);
         if (attributeTypeOptional.isEmpty()) {
-            return new ReturnBack<>("There is no such attributeTypeName", HttpStatus.NOT_FOUND);
+            return new Maybe<>("There is no such attributeTypeName", HttpStatus.NOT_FOUND);
         }
         RequiredAttribute requiredAttribute = attributeTypeOptional.get();
         productType.getRequiredAttributes().remove(requiredAttribute);
-        return new ReturnBack<>(productType);
+        return new Maybe<>(productType);
     }
 
     @Transactional
-    public ReturnBack<ProductType> removeRequiredAttributeType(String productTypeName,
-                                                               Collection<String>
+    public Maybe<ProductType> removeRequiredAttributeType(String productTypeName,
+                                                          Collection<String>
                                                                        attributeTypeNames) {
         if (productTypeName == null) {
-            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
         }
         if (attributeTypeNames == null) {
-            return new ReturnBack<>("There is no attributes", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no attributes", HttpStatus.BAD_REQUEST);
         }
 
 
         Optional<ProductType> productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
-            return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
+            return new Maybe<>("There is no productType", HttpStatus.NOT_FOUND);
         }
         for (String attributeTypeName : attributeTypeNames) {
             removeRequiredAttributeType(productTypeName, attributeTypeName);
         }
-        return new ReturnBack<>(productType.get());
+        return new Maybe<>(productType.get());
     }
 
     public List<ProductType> findAll() {
@@ -143,16 +143,16 @@ public class ProductTypeService {
     }
 
     @Transactional
-    public ReturnBack<ProductType> remove(String productTypeName) {
+    public Maybe<ProductType> remove(String productTypeName) {
         if (productTypeName == null) {
-            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
         }
         var pt = getProductType(productTypeName);
         if (pt.isEmpty()) {
-            return new ReturnBack<>("There is no " + productTypeName, HttpStatus.ACCEPTED);
+            return new Maybe<>("There is no " + productTypeName, HttpStatus.ACCEPTED);
         }
         productTypeRepository.delete(pt.get());
-        return new ReturnBack<>(pt.get());
+        return new Maybe<>(pt.get());
     }
 
 
@@ -164,28 +164,28 @@ public class ProductTypeService {
         return productTypeRepository.findByName(productTypeDTO.getName());
     }
 
-    public ReturnBack<Set<RequiredAttribute>> findRequiredAttributes(String productTypeName) {
+    public Maybe<Set<RequiredAttribute>> findRequiredAttributes(String productTypeName) {
         if (productTypeName == null) {
-            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
         }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
-            return new ReturnBack<>("There is no such product type: " + productTypeName,
+            return new Maybe<>("There is no such product type: " + productTypeName,
                     HttpStatus.NOT_FOUND);
         }
-        return new ReturnBack<>(productType.get().getRequiredAttributes());
+        return new Maybe<>(productType.get().getRequiredAttributes());
     }
 
-    public ReturnBack<Set<Product>> findAllProductsByType(String productTypeName) {
+    public Maybe<Set<Product>> findAllProductsByType(String productTypeName) {
         if (productTypeName == null) {
-            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+            return new Maybe<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
         }
         Optional<ProductType> productTypeOptional = getProductType(productTypeName);
         if (productTypeOptional.isEmpty()) {
-            return new ReturnBack<>("There is no such product type: " + productTypeName,
+            return new Maybe<>("There is no such product type: " + productTypeName,
                     HttpStatus.NOT_FOUND);
         }
-        return new ReturnBack<>(productTypeOptional.get().getProducts());
+        return new Maybe<>(productTypeOptional.get().getProducts());
     }
 
 

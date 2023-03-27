@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ReturnBack<T> {
+public class Maybe<T> {
     private Optional<T> object = Optional.empty();
     private String errorMessage = null;
     private HttpStatus status = HttpStatus.OK;
@@ -41,12 +41,12 @@ public class ReturnBack<T> {
         return object;
     }
 
-    public ReturnBack(T object) {
+    public Maybe(T object) {
         this.object = Optional.ofNullable(object);
     }
 
 
-    public ReturnBack(String errorMessage, HttpStatus status) {
+    public Maybe(String errorMessage, HttpStatus status) {
         this.errorMessage = errorMessage;
         this.status = status;
     }
@@ -60,8 +60,8 @@ public class ReturnBack<T> {
         }
     }
 
-    public <E> ReturnBack<E> map(Function<? super T, ? extends E> function) {
-        return object.map(t -> new ReturnBack<>((E) function.apply(t)))
-                .orElseGet(() -> new ReturnBack<>(errorMessage, status));
+    public <E> Maybe<E> map(Function<? super T, ? extends E> function) {
+        return object.map(t -> new Maybe<>((E) function.apply(t)))
+                .orElseGet(() -> new Maybe<>(errorMessage, status));
     }
 }
