@@ -1,7 +1,9 @@
 package tsukanov.mikhail.products.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -9,6 +11,8 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
+@Setter
+@Getter
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,9 +23,9 @@ public class Product {
     private Long amount;
     @NotNull
     private String manufacturer;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ProductType productType;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Attribute> attributes;
 
     public Product(@NotNull Long serialNumber,
@@ -47,5 +51,17 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(serialNumber, manufacturer, productType);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", serialNumber=" + serialNumber +
+                ", amount=" + amount +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", productType=" + productType.getName() +
+                ", attributes=" + attributes +
+                '}';
     }
 }

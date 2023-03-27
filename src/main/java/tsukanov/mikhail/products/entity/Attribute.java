@@ -15,26 +15,30 @@ public class Attribute {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    @Column(unique = true)
-    private AttributeType attributeType;
+    private String attributeType;
 
     @NotNull
-    private String value;
+    private String aValue;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Product product;
 
-    public Attribute(AttributeType attributeType, @NotNull String value, Product product) {
+    public Attribute(String attributeType, @NotNull String value, Product product) {
         this.attributeType = attributeType;
-        this.value = value;
+        this.aValue = value;
         this.product = product;
     }
 
-    public Attribute(AttributeType attributeType, @NotNull String value) {
+    public Attribute(String attributeType, @NotNull String value) {
         this.attributeType = attributeType;
-        this.value = value;
+        this.aValue = value;
     }
 
-
+    @Override
+    public String toString() {
+        return "Attribute{" +
+                "attributeType='" + attributeType + '\'' +
+                ", aValue='" + aValue + '\'' +
+                '}';
+    }
 }

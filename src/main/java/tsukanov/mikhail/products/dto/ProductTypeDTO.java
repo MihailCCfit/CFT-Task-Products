@@ -1,19 +1,21 @@
 package tsukanov.mikhail.products.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-import tsukanov.mikhail.products.entity.AttributeType;
 import tsukanov.mikhail.products.entity.ProductType;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
+@AllArgsConstructor
 public class ProductTypeDTO {
     @NotNull
     private String name;
-    private Set<AttributeType> requiredAttributeTypes;
+    private Set<AttributeTypeDTO> requiredAttributeTypes;
 
     public ProductTypeDTO(@NotNull String name) {
         this.name = name;
@@ -34,6 +36,8 @@ public class ProductTypeDTO {
     }
 
     public ProductType toProductType() {
-        return new ProductType(name, requiredAttributeTypes);
+        return new ProductType(name, requiredAttributeTypes.stream()
+                .map(AttributeTypeDTO::toAttributeType)
+                .collect(Collectors.toSet()));
     }
 }

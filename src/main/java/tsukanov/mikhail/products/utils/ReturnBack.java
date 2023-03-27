@@ -26,4 +26,14 @@ public class ReturnBack<T> {
         this.errorMessage = errorMessage;
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        if (object.isPresent()) {
+            return object.get().toString();
+        } else {
+            return errorMessage + "code:" + status;
+        }
+
+    }
 }
