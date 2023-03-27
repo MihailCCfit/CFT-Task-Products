@@ -8,8 +8,9 @@ import tsukanov.mikhail.products.dao.AttributeTypeRepository;
 import tsukanov.mikhail.products.dao.ProductTypeRepository;
 import tsukanov.mikhail.products.dto.AttributeTypeDTO;
 import tsukanov.mikhail.products.dto.ProductTypeDTO;
-import tsukanov.mikhail.products.entity.RequiredAttribute;
+import tsukanov.mikhail.products.entity.Product;
 import tsukanov.mikhail.products.entity.ProductType;
+import tsukanov.mikhail.products.entity.RequiredAttribute;
 import tsukanov.mikhail.products.utils.ReturnBack;
 
 import java.util.Collection;
@@ -24,6 +25,9 @@ public class ProductTypeService {
     private AttributeTypeRepository attributeTypeRepository;
 
     public ReturnBack<ProductType> addProductType(ProductTypeDTO productTypeDTO) {
+        if (productTypeDTO == null) {
+            return new ReturnBack<>("There is no productType", HttpStatus.BAD_REQUEST);
+        }
         Optional<ProductType> productType = getProductType(productTypeDTO);
         if (productType.isPresent()) {
             return new ReturnBack<>(productType.get());
@@ -33,6 +37,12 @@ public class ProductTypeService {
 
     @Transactional
     public ReturnBack<ProductType> addRequiredAttributeType(String productTypeName, AttributeTypeDTO attributeTypeDTO) {
+        if (productTypeName == null) {
+            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+        }
+        if (attributeTypeDTO == null) {
+            return new ReturnBack<>("There is no attributeType", HttpStatus.BAD_REQUEST);
+        }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
             return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
@@ -44,6 +54,12 @@ public class ProductTypeService {
     @Transactional
     public ReturnBack<ProductType> addRequiredAttributeType(String productTypeName,
                                                             Collection<AttributeTypeDTO> attributeTypeDTOCollection) {
+        if (productTypeName == null) {
+            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+        }
+        if (attributeTypeDTOCollection == null) {
+            return new ReturnBack<>("There is no attributeType", HttpStatus.BAD_REQUEST);
+        }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
             return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
@@ -61,6 +77,12 @@ public class ProductTypeService {
     @Transactional
     public ReturnBack<ProductType> removeRequiredAttributeType(String productTypeName,
                                                                String attributeTypeName) {
+        if (productTypeName == null) {
+            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+        }
+        if (attributeTypeName == null) {
+            return new ReturnBack<>("There is no attributeTypeName", HttpStatus.BAD_REQUEST);
+        }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
             return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
@@ -78,6 +100,12 @@ public class ProductTypeService {
     @Transactional
     private ReturnBack<ProductType> removeRequiredAttributeType(ProductType productType,
                                                                 String attributeTypeName) {
+        if (productType == null) {
+            return new ReturnBack<>("There is no productType", HttpStatus.BAD_REQUEST);
+        }
+        if (attributeTypeName == null) {
+            return new ReturnBack<>("There is no attributeTypeName", HttpStatus.BAD_REQUEST);
+        }
         Optional<RequiredAttribute> attributeTypeOptional = attributeTypeRepository
                 .findByAttributeName(attributeTypeName);
         if (attributeTypeOptional.isEmpty()) {
@@ -92,6 +120,14 @@ public class ProductTypeService {
     public ReturnBack<ProductType> removeRequiredAttributeType(String productTypeName,
                                                                Collection<String>
                                                                        attributeTypeNames) {
+        if (productTypeName == null) {
+            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+        }
+        if (attributeTypeNames == null) {
+            return new ReturnBack<>("There is no attributes", HttpStatus.BAD_REQUEST);
+        }
+
+
         Optional<ProductType> productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
             return new ReturnBack<>("There is no productType", HttpStatus.NOT_FOUND);
@@ -102,12 +138,15 @@ public class ProductTypeService {
         return new ReturnBack<>(productType.get());
     }
 
-    public ReturnBack<List<ProductType>> findAll() {
-        return new ReturnBack<>(productTypeRepository.findAll());
+    public List<ProductType> findAll() {
+        return productTypeRepository.findAll();
     }
 
     @Transactional
     public ReturnBack<ProductType> remove(String productTypeName) {
+        if (productTypeName == null) {
+            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+        }
         var pt = getProductType(productTypeName);
         if (pt.isEmpty()) {
             return new ReturnBack<>("There is no " + productTypeName, HttpStatus.ACCEPTED);
@@ -125,13 +164,28 @@ public class ProductTypeService {
         return productTypeRepository.findByName(productTypeDTO.getName());
     }
 
-    public ReturnBack<Set<RequiredAttribute>> requiredAttributes(String productTypeName) {
+    public ReturnBack<Set<RequiredAttribute>> findRequiredAttributes(String productTypeName) {
+        if (productTypeName == null) {
+            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+        }
         var productType = getProductType(productTypeName);
         if (productType.isEmpty()) {
             return new ReturnBack<>("There is no such product type: " + productTypeName,
                     HttpStatus.NOT_FOUND);
         }
         return new ReturnBack<>(productType.get().getRequiredAttributes());
+    }
+
+    public ReturnBack<Set<Product>> findAllProductsByType(String productTypeName) {
+        if (productTypeName == null) {
+            return new ReturnBack<>("There is no productTypeName", HttpStatus.BAD_REQUEST);
+        }
+        Optional<ProductType> productTypeOptional = getProductType(productTypeName);
+        if (productTypeOptional.isEmpty()) {
+            return new ReturnBack<>("There is no such product type: " + productTypeName,
+                    HttpStatus.NOT_FOUND);
+        }
+        return new ReturnBack<>(productTypeOptional.get().getProducts());
     }
 
 

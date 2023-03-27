@@ -24,7 +24,7 @@ public class ProductType {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(fetch = EAGER, cascade = ALL)
+    @OneToMany(fetch = EAGER, cascade = CascadeType.MERGE)
     private Set<Product> products;
 
     @OneToMany(fetch = EAGER, cascade = ALL)
