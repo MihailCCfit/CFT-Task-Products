@@ -1,7 +1,6 @@
 package tsukanov.mikhail.products.entity;
 
 import jakarta.persistence.*;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
