@@ -10,6 +10,7 @@ import tsukanov.mikhail.products.entity.Attribute;
 import tsukanov.mikhail.products.entity.Product;
 import tsukanov.mikhail.products.entity.ProductType;
 import tsukanov.mikhail.products.service.ProductService;
+import tsukanov.mikhail.products.service.ProductUpdate;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,13 +49,14 @@ public class ProductController {
                 .getResponse();
     }
 
+    @PostMapping("/change/product")
+    public ResponseEntity<?> updateProduct(@RequestBody ProductUpdate productUpdate) {
+        return productService.updateProduct(productUpdate)
+                .map(InfoProduct::new)
+                .getResponse();
+    }
 
-}
 
-
-record AttributeUpdate(String attributeName,
-                       String updateType,
-                       String attributeType) {
 }
 
 
