@@ -24,7 +24,7 @@ public class ProductService {
     private ProductTypeRepository productTypeRepository;
 
     public ReturnBack<Product> addProduct(ProductDTO productDTO) {
-        Optional<ProductType> type = productTypeRepository.findByName(productDTO.getProductType().getName());
+        Optional<ProductType> type = productTypeRepository.findByName(productDTO.getProductType());
         if (type.isEmpty()) {
             return new ReturnBack<>("There is no type " + productDTO.getProductType(),
                     HttpStatus.NOT_FOUND);

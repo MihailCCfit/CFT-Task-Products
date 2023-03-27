@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import tsukanov.mikhail.products.dao.ProductTypeRepository;
 import tsukanov.mikhail.products.dto.AttributeTypeDTO;
+import tsukanov.mikhail.products.dto.ProductDTO;
 import tsukanov.mikhail.products.dto.ProductTypeDTO;
 import tsukanov.mikhail.products.entity.AttributeType;
 import tsukanov.mikhail.products.entity.ProductType;
@@ -114,6 +115,8 @@ public class ProductTypeService {
         }
         return new ReturnBack<>(productType.get().getRequiredAttributeTypes());
     }
+
+
 
 
 }
