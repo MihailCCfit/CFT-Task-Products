@@ -11,7 +11,6 @@ import tsukanov.mikhail.products.entity.Product;
 import tsukanov.mikhail.products.entity.ProductType;
 import tsukanov.mikhail.products.entity.RequiredAttribute;
 import tsukanov.mikhail.products.service.ProductTypeService;
-import tsukanov.mikhail.products.utils.ReturnBack;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,8 +35,7 @@ public class ProductTypeController {
         if (type == null) {
             return ResponseEntity.badRequest().body("There is no type");
         }
-        ReturnBack<Set<Product>> returnValue = productTypeService.findAllProductsByType(type);
-        return returnValue
+        return productTypeService.findAllProductsByType(type)
                 .map(products -> products.stream()
                         .map(ShortProduct::new)
                         .toList())
@@ -52,12 +50,16 @@ public class ProductTypeController {
                         .toList())
                 .getResponse();
     }
+
+
 }
+
 
 record ShortProduct(
         Long id,
         Long serialNumber,
         Long amount,
+        Double price,
         String manufacturer,
         Set<InfoAttribute> attribute
 ) {
@@ -65,6 +67,7 @@ record ShortProduct(
         this(product.getId(),
                 product.getSerialNumber(),
                 product.getAmount(),
+                product.getPrice(),
                 product.getManufacturer(),
                 product.getAttributes()
                         .stream().map(InfoAttribute::new)

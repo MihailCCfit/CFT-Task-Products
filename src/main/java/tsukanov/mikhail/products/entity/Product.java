@@ -1,7 +1,9 @@
 package tsukanov.mikhail.products.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -18,6 +20,8 @@ public class Product {
     @NotNull
     private Long serialNumber;
     @NotNull
+    private Double price;
+    @NotNull
     private Long amount;
     @NotNull
     private String manufacturer;
@@ -28,11 +32,13 @@ public class Product {
 
     public Product(@NotNull Long serialNumber,
                    @NotNull Long amount,
+                   @NotNull Double price,
                    @NotNull String manufacturer,
                    ProductType productType,
                    Set<Attribute> attributes) {
         this.serialNumber = serialNumber;
         this.amount = amount;
+        this.price = price;
         this.manufacturer = manufacturer;
         this.productType = productType;
         this.attributes = attributes;
@@ -43,12 +49,12 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return serialNumber.equals(product.serialNumber) && manufacturer.equals(product.manufacturer) && Objects.equals(productType, product.productType);
+        return id.equals(product.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(serialNumber, manufacturer, productType);
+        return Objects.hash(id);
     }
 
     @Override
@@ -57,6 +63,7 @@ public class Product {
                 "id=" + id +
                 ", serialNumber=" + serialNumber +
                 ", amount=" + amount +
+                ", price=" + price +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", productType=" + productType.getName() +
                 ", attributes=" + attributes +

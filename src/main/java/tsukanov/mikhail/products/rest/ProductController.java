@@ -2,11 +2,10 @@ package tsukanov.mikhail.products.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tsukanov.mikhail.products.dto.ProductDTO;
 import tsukanov.mikhail.products.entity.Attribute;
 import tsukanov.mikhail.products.entity.Product;
 import tsukanov.mikhail.products.entity.ProductType;
@@ -35,9 +34,16 @@ public class ProductController {
                 .getResponse();
     }
 
-    @GetMapping("/remove/byid/{id}")
+    @DeleteMapping("/remove/byid/{id}")
     public ResponseEntity<?> removeProductById(@PathVariable("id") Long id) {
         return productService.removeProduct(id)
+                .map(InfoProduct::new)
+                .getResponse();
+    }
+
+    @PostMapping("/add/product")
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTO product) {
+        return productService.addProduct(product)
                 .map(InfoProduct::new)
                 .getResponse();
     }
@@ -53,17 +59,26 @@ record AttributeUpdate(String attributeName,
 
 
 record InfoProduct(
+        @NotNull
         Long id,
+        @NotNull
         Long serialNumber,
+        @NotNull
         Long amount,
+        @NotNull
+        Double price,
+        @NotNull
         String manufacturer,
+        @NotNull
         InfoProductType productType,
-        Set<InfoAttribute> attribute
+        @NotNull
+        Set<InfoAttribute> attributes
 ) {
     public InfoProduct(Product product) {
         this(product.getId(),
                 product.getSerialNumber(),
                 product.getAmount(),
+                product.getPrice(),
                 product.getManufacturer(),
                 new InfoProductType(product.getProductType()),
                 product.getAttributes()

@@ -28,7 +28,7 @@ public class Configuration implements ApplicationRunner {
                 new AttributeTypeDTO("diag")
         )));
         Product product = productService
-                .addProduct(new ProductDTO(1L, 1L, "Asus", "Laptop",
+                .addProduct(new ProductDTO(1L, 1L, 1.0, "Asus", "Laptop",
                                 Set.of(new AttributeDTO("Long", "diag", "17"))
                         )
                 )
