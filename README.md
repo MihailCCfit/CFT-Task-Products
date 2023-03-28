@@ -257,7 +257,7 @@
 
 ### *Продукты по id:*
 
-* **Get** `http://localhost:8080/product/find/byid/{id}`
+* **Get** `/product/find/byid/{id}`
 
 * RequestParameter:
   ```
