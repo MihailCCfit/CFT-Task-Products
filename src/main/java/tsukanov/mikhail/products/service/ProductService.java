@@ -32,6 +32,7 @@ public class ProductService {
 
     @Transactional
     public Maybe<Product> addProduct(ProductDTO productDTO) {
+        log.info("Adding product {}", productDTO);
 
         if (productDTO.getProductType() == null) {
             return new Maybe<>("There is no type",
@@ -87,6 +88,7 @@ public class ProductService {
         if (id == null) {
             return new Maybe<>("There is no id", HttpStatus.BAD_REQUEST);
         }
+        log.info("Find product by id: {}", id);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
             return new Maybe<>("There is no product with id: " + id, HttpStatus.NOT_FOUND);
@@ -96,12 +98,16 @@ public class ProductService {
     }
 
     public List<Product> findAll() {
+        log.info("Find all products");
         return productRepository.findAll();
     }
 
     @Transactional
     public Maybe<Product> removeProduct(Long id) {
-        assert id != null;
+        if (id == null) {
+            return new Maybe<>("There is no id", HttpStatus.BAD_REQUEST);
+        }
+        log.info("Remove product by id: {}", id);
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
             return new Maybe<>("There is no product by id: " + id,
@@ -116,8 +122,7 @@ public class ProductService {
 
     @Transactional
     public Maybe<Product> updateProduct(ProductUpdate productUpdate) {
-
-        List<String> errors = new ArrayList<>();
+        log.info("update product: {}", productUpdate);
         if (productUpdate.id() == null) {
             return new Maybe<>("There is no id", HttpStatus.BAD_REQUEST);
         }
@@ -190,15 +195,6 @@ public class ProductService {
 
 
         return new Maybe<>(product);
-    }
-
-
-    public Maybe<Product> removeProduct(Product product) {
-        if (product == null) {
-            return new Maybe<>("There is no product",
-                    HttpStatus.BAD_REQUEST);
-        }
-        return removeProduct(product.getId());
     }
 
 
