@@ -2,12 +2,14 @@ package tsukanov.mikhail.products.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 import java.util.function.Function;
 
+@Slf4j
 public class Maybe<T> {
     private Optional<T> object = Optional.empty();
     private String errorMessage = null;
@@ -24,6 +26,7 @@ public class Maybe<T> {
 
     public ResponseEntity<?> getResponse() {
         if (object.isEmpty()) {
+            log.warn("Some error: {}", this);
             return ResponseEntity.status(status.value()).body(new Response(errorMessage, status));
         } else {
             return ResponseEntity.ok(object);

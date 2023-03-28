@@ -3,10 +3,9 @@ package tsukanov.mikhail.products.rest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tsukanov.mikhail.products.dto.AttributeTypeDTO;
+import tsukanov.mikhail.products.dto.ProductTypeDTO;
 import tsukanov.mikhail.products.entity.Product;
 import tsukanov.mikhail.products.entity.ProductType;
 import tsukanov.mikhail.products.entity.RequiredAttribute;
@@ -51,6 +50,25 @@ public class ProductTypeController {
                 .getResponse();
     }
 
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addProductType(@RequestBody ProductTypeDTO productTypeDTO) {
+        return productTypeService.addProductType(productTypeDTO)
+                .map(TypeProductType::new)
+                .getResponse();
+    }
+
+    @PostMapping("/requiredarguments/add")
+    public ResponseEntity<?> addRequiredArgumentsForProductType(@RequestBody RequiredArgumentForAdding requiredArgument) {
+        return productTypeService.addRequiredAttribute(requiredArgument.typeName(),
+                        new AttributeTypeDTO(requiredArgument.argumentName()))
+                .map(TypeProductType::new)
+                .getResponse();
+    }
+
+}
+
+record RequiredArgumentForAdding(String argumentName, String typeName) {
 
 }
 
